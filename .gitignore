@@ -1,0 +1,4 @@
+backend-crud/node_modules
+backend-websocket/node_modules
+backend-crud/.env
+backend-websocket/.env
