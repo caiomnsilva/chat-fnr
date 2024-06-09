@@ -1,103 +1,52 @@
-// backend/src/server.js
-import { WebSocketServer } from "ws";
-import dotenv from "dotenv";
+import { WebSocketServer } from 'ws';
+import dotenv from 'dotenv';
+import fetch from 'node-fetch';
 
 dotenv.config();
 
 const wss = new WebSocketServer({ port: process.env.PORT || 8080 });
 
-wss.on("connection", (ws) => {
-    ws.on("error", console.error);
+const forwardMessage = async (url, message) => {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(message),
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error forwarding message:', error);
+        return { content: 'Erro ao processar a solicitação' };
+    }
+};
 
-    ws.on("message", async (data) => {
+wss.on('connection', (ws) => {
+    ws.on('error', console.error);
+
+    ws.on('message', async (data) => {
         const message = JSON.parse(data);
-        const { userId, userName, userColor, content } = message;
+        const { content } = message;
 
-        if (content.startsWith("/som")) {
-            const soundName = content.split(" ")[1];
-            if (soundName) {
-                const soundMessage = {
-                    userId,
-                    userName,
-                    userColor,
-                    content: `/som ${soundName}`,
-                };
-                wss.clients.forEach((client) =>
-                    client.send(JSON.stringify(soundMessage))
-                );
-            } else {
-                ws.send(
-                    JSON.stringify({
-                        userId,
-                        userName,
-                        userColor,
-                        content: "Nome do som não fornecido",
-                    })
-                );
-            }
-        } else if (content.startsWith("/cat")) {
-            try {
-                const catResponse = await fetch("https://cataas.com/cat");
-                const catURL = catResponse.url;
-                const catMessage = {
-                    userId,
-                    userName,
-                    userColor,
-                    content: `/cat ${catURL}`,
-                };
-                wss.clients.forEach((client) =>
-                    client.send(JSON.stringify(catMessage))
-                );
-            } catch (error) {
-                ws.send(
-                    JSON.stringify({
-                        userId,
-                        userName,
-                        userColor,
-                        content: "Erro ao buscar a imagem de gato",
-                    })
-                );
-            }
-        } else if (content.startsWith("/fox")) {
-            const randomNum = Math.floor(Math.random() * 119) + 1;
-            const foxURL = `https://randomfox.ca/images/${randomNum}.jpg`;
-            const foxMessage = {
-                userId,
-                userName,
-                userColor,
-                content: `/fox ${foxURL}`,
-            };
-            wss.clients.forEach((client) =>
-                client.send(JSON.stringify(foxMessage))
-            );
-        } else if (content.startsWith("/dog")) {
-            try {
-                const dogResponse = await fetch("https://random.dog/woof.json");
-                const dogData = await dogResponse.json();
-                const dogURL = dogData.url;
-                const dogMessage = {
-                    userId,
-                    userName,
-                    userColor,
-                    content: `/dog ${dogURL}`,
-                };
-                wss.clients.forEach((client) =>
-                    client.send(JSON.stringify(dogMessage))
-                );
-            } catch (error) {
-                ws.send(
-                    JSON.stringify({
-                        userId,
-                        userName,
-                        userColor,
-                        content: "Erro ao buscar a imagem de cachorro",
-                    })
-                );
-            }
+        let serviceUrl;
+
+        if (content.startsWith('/som')) {
+            serviceUrl = `http://localhost:${process.env.SOUND_SERVICE_PORT}`;
+        } else if (content.startsWith('/cat')) {
+            serviceUrl = `http://localhost:${process.env.CAT_SERVICE_PORT}`;
+        } else if (content.startsWith('/fox')) {
+            serviceUrl = `http://localhost:${process.env.FOX_SERVICE_PORT}`;
+        } else if (content.startsWith('/dog')) {
+            serviceUrl = `http://localhost:${process.env.DOG_SERVICE_PORT}`;
+        }
+
+        if (serviceUrl) {
+            const serviceResponse = await forwardMessage(serviceUrl, message);
+            wss.clients.forEach((client) => client.send(JSON.stringify(serviceResponse)));
         } else {
             wss.clients.forEach((client) => client.send(data.toString()));
         }
     });
 
-    console.log("client connected");
+    console.log('client connected');
 });
