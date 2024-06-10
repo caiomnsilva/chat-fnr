@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" />
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/crud-style.css">
 
     <title>ChatBox | Faculdade Nova Roma</title>
 </head>
@@ -31,16 +32,73 @@
                 </div> -->
             </section>
 
+            <section class="modal">
+                <dialog> 
+                    <button onclick="handleForm()" id="open-form">Cadastrar</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>E-mail</th>
+                            <th>Genero</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel">
+                    </tbody>
+                </table>
+                <form class="add-form">
+                    <button onclick="handleTable()" id="close-form">
+                        <span class="material-symbols-outlined">
+                            arrow_back
+                            </span>
+                    </button>
+                    <div>
+                        <label for="name" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+                    <div>
+                        <label for="cpf" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpf" required>
+                    </div>
+                    <div>
+                        <label for="name" class="form-label">E-Mail</label>
+                        <input type="email" class="form-control" id="email" placeholder="exemplo@exemplo.com" required>
+                    </div>
+                    <div>
+                        <label for="name" class="form-label">Genero</label>
+                        <input type="text" class="form-control" id="gender" placeholder="Ex.:Feminino, Não-binario, etc..." required>
+                    </div>
+                    <div>
+                        <button onclick="handleTable()" type="submit" class="send-form">+</button>
+                    </div>
+                </form>
+            </dialog>
+        
+            
+            </section>
+
             <form class="chat__form">
                 <input type="text" class="chat__input" placeholder="Digite uma mensagem" required />
                 <button type="submit" class="chat__button">
                     <span class="material-symbols-outlined">send</span>
                 </button>
+                <button class="showmodal">
+                    <span class="material-symbols-outlined">
+                        add_circle
+                        </span>
+                </button>
             </form>
         </section>
 
-    </section>
+        <section class="crud_modal">
+            
+        </section>
 
+    </section>
+    
+    <script src="./js/crudscript.js"></script>
     <script src="./js/script.js"></script>
 </body>
 </html>

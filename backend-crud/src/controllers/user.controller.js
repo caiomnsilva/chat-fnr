@@ -5,10 +5,6 @@ const create = async (req, res) => {
     try {
         const { name, cpf, email, gender } = req.body;
 
-        res.status(400).json({
-            message: "Submit all fields for registration",
-        });
-
         const user = await userService.createService(req.body);
 
         if (!user) {
