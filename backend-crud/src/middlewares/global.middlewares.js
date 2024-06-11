@@ -78,6 +78,28 @@ export const validBodyPost = async (req, res, next) => {
     }
 };
 
+export const validateEmail = (req, res, next) => {
+    const { email } = req.body;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+    if (!email ||!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    next();
+};
+
+export const validateCpf = (req, res, next) => {
+    const { cpf } = req.body;
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+
+    if (!cpf ||!cpfRegex.test(cpf)) {
+        return res.status(400).json({ message: "Invalid cpf format" });
+    }
+
+    next();
+};
+
 export default {
     validId,
     validUser,
