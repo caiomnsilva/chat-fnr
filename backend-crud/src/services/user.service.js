@@ -9,20 +9,21 @@ const findByIdService = (id) => User.findById(id);
 const updateService = (
     id,
     name,
-    username,
+    cpf,
     email,
-    password,
-    avatar,
-    background
+    gender
 ) =>
     User.findOneAndUpdate(
         { _id: id },
-        { name, username, email, password, avatar, background }
+        { name, cpf, email, gender }
     );
+
+const deleteService = (id) => User.findByIdAndDelete(id);
 
 export default {
     createService,
     findAllService,
     findByIdService,
     updateService,
+    deleteService
 };

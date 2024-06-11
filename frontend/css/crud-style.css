@@ -1,0 +1,124 @@
+/* CSS aplicado apenas dentro da section com a classe "modal" */
+.modal dialog {
+    align-self: center;
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    border: none;
+}
+
+.modal .add-form {
+    display: flex;
+    margin-bottom: 50px;
+    gap: 15px;
+    width: 100%;
+    visibility: collapse;
+}
+
+.modal input {
+    width: 100%;
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.modal button[type="submit"],
+.modal #close-form {
+    background-color: #0099ff;
+    height: 50px;
+    width: 50px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 19px;
+}
+
+.modal #open-form {
+    background-color: #0099ff;
+    height: 50px;
+    width: auto;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    cursor: pointer;
+    margin: auto;
+    margin-bottom: 25px;
+    padding: 0 10px 0 10px;
+}
+
+.modal table {
+    visibility: visible;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.modal .open-form {
+    visibility: visible;
+}
+
+.modal td,
+.modal th {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.modal td {
+    color: #333;
+    font-weight: 600;
+}
+
+.modal tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+.modal select {
+    width: 100%;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: capitalize;
+    background-color: #ebebeb;
+}
+
+.modal select:hover {
+    background-color: #ddd;
+}
+
+.modal .btn-action {
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.modal .btn-action:nth-child(1) {
+    background-color: orange;
+    margin-right: 5px;
+}
+.modal .btn-action:nth-child(2) {
+    background-color: rgba(237, 42, 42, 1);
+}
+.modal .btn-action:nth-child(3) {
+    background-color: green;
+}

@@ -34,18 +34,16 @@ export const validUser = async (req, res, next) => {
     }
 };
 
-const validBodyPatch = async (req, res, next) => {
+export const validBodyPatch = async (req, res, next) => {
     try {
-        const { name, username, email, password, avatar, background } =
+        const { name, cpf, email, gender } =
             req.body;
 
         if (
-            !name &&
-            !username &&
-            !email &&
-            !password &&
-            !avatar &&
-            !background
+            !name ||
+            !cpf ||
+            !email ||
+            !gender
         ) {
             res.status(400).json({
                 message: "Submit at last one field for update!",
@@ -58,18 +56,16 @@ const validBodyPatch = async (req, res, next) => {
     }
 };
 
-const validBodyPost = async (req, res, next) => {
+export const validBodyPost = async (req, res, next) => {
     try {
-        const { name, username, email, password, avatar, background } =
+        const { name, cpf, email, gender } =
             req.body;
 
         if (
             !name ||
-            !username ||
+            !cpf ||
             !email ||
-            !password ||
-            !avatar ||
-            !background
+            !gender
         ) {
             res.status(400).json({
                 message: "Submit all fields for registration",

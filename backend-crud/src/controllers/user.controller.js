@@ -2,99 +2,73 @@ import userService from "../services/user.service.js";
 
 /**
  * @swagger
- * /users:
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - cpf
+ *         - email
+ *         - gender
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the user
+ *         name:
+ *           type: string
+ *           description: The user's name
+ *         cpf:
+ *           type: string
+ *           description: The user's CPF
+ *         email:
+ *           type: string
+ *           description: The user's email
+ *         gender:
+ *           type: string
+ *           description: The user's gender
+ *       example:
+ *         name: John Doe
+ *         cpf: 12345678900
+ *         email: john.doe@example.com
+ *         gender: male
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: The users managing API
+ */
+
+/**
+ * @swagger
+ * /user:
  *   post:
  *     summary: Create a new user
- *     tags:
- *       - Users
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               avatar:
- *                 type: string
- *               background:
- *                 type: string
- *             required:
- *               - name
- *               - username
- *               - email
- *               - password
- *               - avatar
- *               - background
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       201:
- *         description: User created successfully
+ *         description: The user was successfully created
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: User created successfully!
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                     name:
- *                       type: string
- *                     username:
- *                       type: string
- *                     email:
- *                       type: string
- *                     avatar:
- *                       type: string
- *                     background:
- *                       type: string
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad Request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *         description: Missing fields or error in user creation
  *       500:
- *         description: Internal Server Error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *         description: Some server error
  */
+
 const create = async (req, res) => {
     try {
-        const { name, username, email, password, avatar, background } =
-            req.body;
-
-        if (
-            !name ||
-            !username ||
-            !email ||
-            !password ||
-            !avatar ||
-            !background
-        ) {
-            res.status(400).json({
-                message: "Submit all fields for registration",
-            });
-        }
+        const { name, cpf, email, gender } = req.body;
 
         const user = await userService.createService(req.body);
 
@@ -107,10 +81,9 @@ const create = async (req, res) => {
             user: {
                 id: user._id,
                 name,
-                username,
+                cpf,
                 email,
-                avatar,
-                background,
+                gender,
             },
         });
     } catch (err) {
@@ -120,54 +93,23 @@ const create = async (req, res) => {
 
 /**
  * @swagger
- * /users:
+ * /user:
  *   get:
- *     summary: Retrieve a list of users
- *     tags:
- *       - Users
- *     description: Retrieve a list of all registered users.
+ *     summary: Returns the list of all the users
+ *     tags: [Users]
  *     responses:
  *       200:
- *         description: A list of users
+ *         description: The list of the users
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                     description: The user ID
- *                     example: 1
- *                   name:
- *                     type: string
- *                     description: The user's name
- *                     example: John Doe
- *                   email:
- *                     type: string
- *                     description: The user's email
- *                     example: johndoe@example.com
+ *                 $ref: '#/components/schemas/User'
  *       400:
  *         description: No registered users found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: There are no registered users
  *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Internal server error
+ *         description: Some server error
  */
 
 const findAll = async (req, res) => {
@@ -186,62 +128,32 @@ const findAll = async (req, res) => {
     }
 };
 
-
 /**
  * @swagger
- * /users/{id}:
+ * /user/{id}:
  *   get:
- *     summary: Retrieve a user by ID
+ *     summary: Get the user by id
  *     tags: [Users]
- *     description: Retrieve a single user by their ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
- *         description: The user ID
+ *         description: The user id
  *     responses:
  *       200:
- *         description: A user object
+ *         description: The user description by id
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   description: The user ID
- *                   example: 1
- *                 name:
- *                   type: string
- *                   description: The user's name
- *                   example: John Doe
- *                 email:
- *                   type: string
- *                   description: The user's email
- *                   example: johndoe@example.com
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: User not found
+ *         description: User not found
  *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Internal server error
+ *         description: Some server error
  */
+
 const findById = async (req, res) => {
     try {
         const user = await userService.findByIdService(
@@ -256,114 +168,74 @@ const findById = async (req, res) => {
 
 /**
  * @swagger
- * /users/{id}:
- *   patch:
- *     summary: Update a user
+ * /user/{id}:
+ *   put:
+ *     summary: Update the user by the id
  *     tags: [Users]
- *     description: Update user information.
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
- *         description: The user ID
+ *         description: The user id
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: The user's name
- *                 example: John Doe
- *               username:
- *                 type: string
- *                 description: The user's username
- *                 example: johndoe
- *               email:
- *                 type: string
- *                 description: The user's email
- *                 example: johndoe@example.com
- *               password:
- *                 type: string
- *                 description: The user's password
- *                 example: password123
- *               avatar:
- *                 type: string
- *                 description: The user's avatar URL
- *                 example: http://example.com/avatar.jpg
- *               background:
- *                 type: string
- *                 description: The user's background image URL
- *                 example: http://example.com/background.jpg
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       200:
- *         description: User successfully updated
+ *         description: The user was updated
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: User successfully updated!
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Submit at least one field for update!
+ *         description: User not found or error in update
  *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Internal server error
+ *         description: Some server error
  */
+
 const update = async (req, res) => {
+    const { name, cpf, email, gender } = req.body;
+
+    const { id, user } = req;
+
+    await userService.updateService(id, name, cpf, email, gender);
+
+    res.send({ message: "User successfully updated!" });
+};
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   delete:
+ *     summary: Remove the user by id
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user id
+ *     responses:
+ *       200:
+ *         description: The user was deleted
+ *       400:
+ *         description: User not found or error in deletion
+ *       500:
+ *         description: Some server error
+ */
+
+const deleteById = async (req, res) => {
     try {
-        const { name, username, email, password, avatar, background } =
-            req.body;
-
-        if (
-            !name &&
-            !username &&
-            !email &&
-            !password &&
-            !avatar &&
-            !background
-        ) {
-            res.status(400).json({
-                message: "Submit at last one field for update!",
-            });
-        }
-
-        const { id, user } = req;
-
-        await userService.updateService(
-            id,
-            name,
-            username,
-            email,
-            password,
-            avatar,
-            background
-        );
-
-        res.send({ message: "User successfully updated!" });
-    } catch (err) {
-        res.status(500).send({ message: err.message });
+        const user = await userService.deleteService(req.params.id, req.userId);
+        return res.send(user);
+    } catch (e) {
+        return res.status(400).send(e.message);
     }
 };
 
@@ -372,4 +244,5 @@ export default {
     findAll,
     findById,
     update,
+    deleteById,
 };
