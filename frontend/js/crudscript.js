@@ -53,7 +53,15 @@ const createUser = async (event) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json")!== -1) {
+                const errorData = await response.json();
+                const errorMessage = errorData.message || `Error: ${response.status}`;
+                throw new Error(errorMessage);
+            } else {
+                const errorMessage = `Error: ${response.status} ${await response.text()}`;
+                throw new Error(errorMessage);
+            }
         }
 
         monteTabela();
@@ -63,7 +71,7 @@ const createUser = async (event) => {
         inputGender.value = "";
     } catch (error) {
         console.error("Failed to create user:", error);
-        alert("Failed to create user.");
+        alert(error.message);
     }
 };
 
@@ -98,14 +106,22 @@ const updateUser = async ({ id, name, cpf, email, gender }) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json")!== -1) {
+                const errorData = await response.json();
+                const errorMessage = errorData.message || `Error: ${response.status}`;
+                throw new Error(errorMessage);
+            } else {
+                const errorMessage = `Error: ${response.status} ${await response.text()}`;
+                throw new Error(errorMessage);
+            }
         }
 
         handleTable();
         monteTabela();
     } catch (error) {
         console.error("Failed to update user:", error);
-        alert("Failed to update user.");
+        alert(error.message);
     }
 };
 
@@ -246,3 +262,32 @@ const handleTable = () => {
 };
 
 monteTabela();
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var cpfInput = document.getElementById('cpf');
+
+    cpfInput.addEventListener('input', cpfMask);
+    cpfInput.addEventListener('keyup', cpfMask);
+
+    function cpfMask(event) {
+        var value = event.target.value;
+        var maskedValue = '';
+
+        value = value.replace(/\D/g, '');
+
+        if (value.length <= 3) {
+            maskedValue += value;
+        } else if (value.length === 4) {
+            maskedValue += value.slice(0, 1) + '.' + value.slice(1);
+        } else if (value.length >= 5 && value.length <= 7) {
+            maskedValue += value.slice(0, 3) + '.' + value.slice(3);
+        } else if (value.length >= 8 && value.length <= 10) {
+            maskedValue += value.slice(0, 3) + '.' + value.slice(3, 6) + '.' + value.slice(6);
+        } else if (value.length === 11) {
+            maskedValue += value.slice(0, 3) + '.' + value.slice(3, 6) + '.' + value.slice(6, 9) + '-' + value.slice(9);
+        }
+
+        event.target.value = maskedValue;
+    }
+});
