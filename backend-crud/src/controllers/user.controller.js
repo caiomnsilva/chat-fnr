@@ -118,6 +118,58 @@ const create = async (req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Retrieve a list of users
+ *     tags:
+ *       - Users
+ *     description: Retrieve a list of all registered users.
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     description: The user ID
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     description: The user's name
+ *                     example: John Doe
+ *                   email:
+ *                     type: string
+ *                     description: The user's email
+ *                     example: johndoe@example.com
+ *       400:
+ *         description: No registered users found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: There are no registered users
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
+
 const findAll = async (req, res) => {
     try {
         const users = await userService.findAllService();
@@ -134,6 +186,62 @@ const findAll = async (req, res) => {
     }
 };
 
+
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Retrieve a user by ID
+ *     tags: [Users]
+ *     description: Retrieve a single user by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: A user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: The user ID
+ *                   example: 1
+ *                 name:
+ *                   type: string
+ *                   description: The user's name
+ *                   example: John Doe
+ *                 email:
+ *                   type: string
+ *                   description: The user's email
+ *                   example: johndoe@example.com
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
 const findById = async (req, res) => {
     try {
         const user = await userService.findByIdService(
@@ -146,6 +254,83 @@ const findById = async (req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * /users/{id}:
+ *   patch:
+ *     summary: Update a user
+ *     tags: [Users]
+ *     description: Update user information.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The user's name
+ *                 example: John Doe
+ *               username:
+ *                 type: string
+ *                 description: The user's username
+ *                 example: johndoe
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *                 example: johndoe@example.com
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *                 example: password123
+ *               avatar:
+ *                 type: string
+ *                 description: The user's avatar URL
+ *                 example: http://example.com/avatar.jpg
+ *               background:
+ *                 type: string
+ *                 description: The user's background image URL
+ *                 example: http://example.com/background.jpg
+ *     responses:
+ *       200:
+ *         description: User successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User successfully updated!
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Submit at least one field for update!
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
 const update = async (req, res) => {
     try {
         const { name, username, email, password, avatar, background } =
