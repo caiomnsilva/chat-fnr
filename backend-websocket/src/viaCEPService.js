@@ -12,7 +12,7 @@ app.get("/get-ruas/:state/:city/:street", async (req, res) => {
             `https://viacep.com.br/ws/${address}/json/`
         );
         const data = response.data;
-        
+
         return res.json({ type: "cepResponse", cep: data });
     } catch (error) {
         // Se ocorrer um erro ao buscar os dados do CEP, retornar um erro 500
@@ -30,8 +30,8 @@ app.get("/get-cep/:cep", async (req, res) => {
         const response = await axios.get(
             `https://viacep.com.br/ws/${cep}/json/`
         );
-        const data = response.data;
-        
+        const data = [response.data];
+
         return res.json({ type: "cepResponse", cep: data });
     } catch (error) {
         // Se ocorrer um erro ao buscar os dados do CEP, retornar um erro 500
