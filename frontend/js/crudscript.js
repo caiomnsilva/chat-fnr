@@ -184,7 +184,7 @@ const createRow = (user) => {
         );
 
         saveButton.classList.add("btn-action");
-        
+
         saveButton.type = "submit";
         saveButton.addEventListener("click", async (event) => {
             event.preventDefault();
@@ -195,7 +195,6 @@ const createRow = (user) => {
                 email: editInputEmail.value,
                 gender: editInputGender.value,
             });
-            // Após salvar, remover o formulário de edição e voltar para a tabela
             monteTabela();
         });
 

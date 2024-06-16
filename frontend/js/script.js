@@ -30,10 +30,8 @@ const soundMap = {
 
 const createMessageSelfElement = (content) => {
     const div = document.createElement("div");
-
     div.classList.add("message--self");
     div.innerHTML = content;
-
     return div;
 };
 
@@ -77,9 +75,50 @@ const playSound = (soundName) => {
 };
 
 const processMessage = ({ data }) => {
-    const { userId, userName, userColor, content } = JSON.parse(data);
+    const messageData = JSON.parse(data);
+    const { userId, userName, userColor, content, type } = messageData;
 
-    if (content.startsWith("/som ")) {
+    console.log("Received message:", messageData);
+
+    if (type === "cepResponse") {
+        if (messageData.error) {
+            const errorMessage = `<div><strong>Error:</strong> ${messageData.error}</div>`;
+            const message = createMessageSelfElement(errorMessage);
+            chatMessages.appendChild(message);
+            scrollScreen();
+            return;
+        }
+
+        if (!messageData.cep || messageData.cep.length === 0) {
+            const noDataMessage = `<div><strong>No data found for the provided address.</strong></div>`;
+            const message = createMessageSelfElement(noDataMessage);
+            chatMessages.appendChild(message);
+            scrollScreen();
+            return;
+        }
+
+        const addressDetails = messageData.cep
+            .map(
+                (item) => `
+            <div>
+                <strong>CEP:</strong> ${item.cep}<br>
+                <strong>Logradouro:</strong> ${item.logradouro}<br>
+                <strong>Complemento:</strong> ${item.complemento}<br>
+                <strong>Bairro:</strong> ${item.bairro}<br>
+                <strong>Localidade:</strong> ${item.localidade}<br>
+                <strong>UF:</strong> ${item.uf}<br>
+                <br>
+            </div>
+        `
+            )
+            .join("");
+
+        console.log("CEP Data:", addressDetails);
+
+        const message = createMessageSelfElement(addressDetails);
+        chatMessages.appendChild(message);
+        scrollScreen();
+    } else if (content.startsWith("/som ")) {
         const soundName = content.split(" ")[1];
         playSound(soundName);
 
@@ -94,7 +133,7 @@ const processMessage = ({ data }) => {
         const catURL = content.split(" ")[1];
         const img = document.createElement("img");
 
-        console.log(catURL);
+        console.log("Cat URL:", catURL);
 
         img.src = catURL;
         img.alt = "Imagem de gato";
