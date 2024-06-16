@@ -60,7 +60,8 @@ body {
     outline: 2px solid #f2f2f2;
 }
 
-.login__button {
+.login__button,
+.showmodal {
     border: none;
     padding: 15px;
     border-radius: 5px;
@@ -71,7 +72,8 @@ body {
     color: #121212;
 }
 
-.login__button:hover {
+.login__button:hover,
+.showmodal:hover {
     background-color: #fff;
 }
 
@@ -128,7 +130,7 @@ body {
 .chat__messages > div {
     padding: 10px;
     width: 100%;
-    max-width: 250px;
+    max-width: 500px;
     font-size: 0.9rem;
     font-weight: 500;
     margin-bottom: 15px;

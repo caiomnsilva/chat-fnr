@@ -5,13 +5,14 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "cross-env concurrently \"node ./src/server.js\" \"node ./src/catService.js\" \"node ./src/foxService.js\" \"node ./src/dogService.js\" \"node ./src/soundService.js\"",
+        "start": "cross-env concurrently \"node ./src/server.js\" \"node ./src/catService.js\" \"node ./src/foxService.js\" \"node ./src/dogService.js\" \"node ./src/soundService.js\" \"node ./src/viaCEPService.js\"",
         "dev": "node --watch ./src/server.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "axios": "^1.7.2",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "mongoose": "^8.4.1",
