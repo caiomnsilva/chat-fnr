@@ -54,13 +54,15 @@ const fetchCepFromService = async (address) => {
 };
 
 function constructAddressUrl(ruaString) {
-    ruaString = ruaString.replace('/rua ', '');
-    let parts = ruaString.split('/');
+    ruaString = ruaString.replace("/rua ", "");
+    let parts = ruaString.split("/");
     if (parts.length === 3) {
         let state = parts[0];
         let city = parts[1];
         let street = parts[2];
-        return `${state}/${encodeURIComponent(city)}/${encodeURIComponent(street)}`;
+        return `${state}/${encodeURIComponent(city)}/${encodeURIComponent(
+            street
+        )}`;
     } else {
         return null;
     }
@@ -78,9 +80,15 @@ wss.on("connection", (ws) => {
         const message = JSON.parse(data);
         const { content } = message;
 
+        const type = message.type || null;
+
         let serviceUrl;
 
-        if (content.startsWith("/som")) {
+        if (type === "chatgptText") {
+            serviceUrl = `http://localhost:${process.env.CHATGPT_SERVICE_PORT}/text`;
+        } else if (type === "chatgptImage") {
+            serviceUrl = `http://localhost:${process.env.CHATGPT_SERVICE_PORT}/image`;
+        } else if (content.startsWith("/som")) {
             serviceUrl = `http://localhost:${process.env.SOUND_SERVICE_PORT}`;
         } else if (content.startsWith("/cat")) {
             serviceUrl = `http://localhost:${process.env.CAT_SERVICE_PORT}`;
@@ -91,20 +99,31 @@ wss.on("connection", (ws) => {
         } else if (content.startsWith("/rua")) {
             const addressUrl = constructAddressUrl(content);
             const ruaResponse = await fetchRuasFromService(addressUrl);
-            ws.send(JSON.stringify({ ...message, type: "cepResponse", cep: ruaResponse.cep }));
+            ws.send(
+                JSON.stringify({
+                    ...message,
+                    type: "cepResponse",
+                    cep: ruaResponse.cep,
+                })
+            );
             return;
         } else if (content.startsWith("/cep")) {
             const cepUrl = constructCep(content);
             const cepResponse = await fetchCepFromService(cepUrl);
-            ws.send(JSON.stringify({ ...message, type: "cepResponse", cep: cepResponse.cep }));
+            ws.send(
+                JSON.stringify({
+                    ...message,
+                    type: "cepResponse",
+                    cep: cepResponse.cep,
+                })
+            );
             return;
         }
 
         if (serviceUrl) {
             const serviceResponse = await forwardMessage(serviceUrl, message);
-            wss.clients.forEach((client) =>
-                client.send(JSON.stringify(serviceResponse))
-            );
+            // Enviar a resposta APENAS para o remetente da mensagem
+            ws.send(JSON.stringify(serviceResponse)); 
         } else {
             wss.clients.forEach((client) => client.send(data.toString()));
         }

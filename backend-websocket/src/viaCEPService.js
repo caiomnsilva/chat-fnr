@@ -1,8 +1,11 @@
 import express from "express";
 import axios from "axios";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-const port = 3003;
+
 
 app.get("/get-ruas/:state/:city/:street", async (req, res) => {
     const { state, city, street } = req.params;
@@ -43,6 +46,6 @@ app.get("/get-cep/:cep", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`HTTP service is running on http://localhost:${port}`);
+app.listen(process.env.VIACEP_SERVICE_PORT, () => {
+    console.log(`HTTP service is running on http://localhost:${process.env.VIACEP_SERVICE_PORT}`);
 });

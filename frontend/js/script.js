@@ -80,7 +80,32 @@ const processMessage = ({ data }) => {
 
     console.log("Received message:", messageData);
 
-    if (type === "cepResponse") {
+    if (type === "chatgptText") {
+        // Exibe a resposta do ChatGPT como uma mensagem
+        const message =
+            userId == user.id
+                ? createMessageSelfElement(content)
+                : createMessageOtherElement(content, userName, userColor);
+        chatMessages.appendChild(message);
+        scrollScreen();
+    } else if (type === "chatgptImage") {
+        // Extrai a URL da imagem da mensagem
+        const imgUrl = content.replace("/imgpt ", "");
+    
+        // Cria o elemento de link
+        const link = document.createElement("a");
+        link.href = imgUrl;
+        link.target = "_blank"; // Abre a imagem em uma nova aba
+        link.textContent = "Imagem gerada pelo ChatGPT"; // Texto do link
+    
+        // Cria a mensagem com o link
+        const message = userId == user.id
+            ? createMessageSelfElement(link.outerHTML)
+            : createMessageOtherElement(link.outerHTML, userName, userColor);
+    
+        chatMessages.appendChild(message);
+        scrollScreen();
+    } else if (type === "cepResponse") {
         if (messageData.error) {
             const errorMessage = `<div><strong>Error:</strong> ${messageData.error}</div>`;
             const message = createMessageSelfElement(errorMessage);
@@ -202,14 +227,28 @@ const handleLogin = (event) => {
 const sendMessage = (event) => {
     event.preventDefault();
 
-    const message = {
+    const messageContent = chatInput.value;
+    let message = {
         userId: user.id,
         userName: user.name,
         userColor: user.color,
-        content: chatInput.value,
+        content: messageContent,
     };
 
+    if (messageContent.startsWith("/chatgpt")) {
+        message.content = messageContent.replace("/chatgpt ", ""); // Remove o comando
+        message.type = "chatgptText"; // Adiciona um tipo para identificar no servidor
+    } else if (messageContent.startsWith("/imgpt")) {
+        message.content = messageContent.replace("/imgpt ", ""); // Remove o comando
+        message.type = "chatgptImage"; // Adiciona um tipo para identificar no servidor
+    }
+
     websocket.send(JSON.stringify(message));
+    if (message.type === "chatgptText" || message.type === "chatgptImage") {
+        const messageElement = createMessageSelfElement(messageContent);
+        chatMessages.appendChild(messageElement);
+        scrollScreen();
+    }
 
     chatInput.value = "";
 };
